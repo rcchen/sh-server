@@ -33,7 +33,7 @@ class Server < Sinatra::Base
 		File.open(filename, "w") do |f|
 			f.write(params[:photo][:tempfile].read)
 		end
-		photo = Photo.create({ :url => filename, :latitude => latitude, :longitude => longitude })
+		photo = Photo.create({ :url => filename, :latitude => params[:latitude], :longitude => params[:longitude] })
 		user = User.first( :token => params[:token] )
 		user.photos << photo
 		photo.to_json
