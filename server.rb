@@ -29,8 +29,8 @@ class Server < Sinatra::Base
 
 	# Add photo
 	post '/api/photos' do
-		filename = "public/#{SecureRandom.uuid}.jpeg"
-		File.open(filename, "w") do |f|
+		filename = "photos/#{SecureRandom.uuid}.jpeg"
+		File.open("public/#{filename}", "w") do |f|
 			f.write(params[:photo][:tempfile].read)
 		end
 		photo = Photo.create({ :url => filename, :latitude => params[:latitude], :longitude => params[:longitude] })
