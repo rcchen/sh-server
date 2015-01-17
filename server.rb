@@ -40,14 +40,18 @@ class Server < Sinatra::Base
 	end
 
 	# Heart/unheart a photo
-	post '/api/photos/:id/like' do
+	post '/api/photos/:id/heart' do
 		photo = Photo.first(:id => params[:id])
 		user = User.first(:token => params[:token])
+		status = true
 		if photo[:hearts].include? user[:_id]
 			photo[:hearts].delete(user[:_id])
+			status = false
 		else
 			photo[:hearts] << user[:_id]
 		end
 		photo.save!
+		content_type :json
+		{ :photo_id => params[:id], :heart_status => status }.to_json
 	end
 end
