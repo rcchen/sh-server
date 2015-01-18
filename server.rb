@@ -1,6 +1,12 @@
 require './models/user'
 require './models/photo'
 
+require 'sinatra/cross_origin'
+
+configure do
+  enable :cross_origin
+end
+
 class Server < Sinatra::Base
 
 	MongoMapper.connection = Mongo::Connection.new('localhost')
@@ -8,7 +14,7 @@ class Server < Sinatra::Base
 
 	# Basic route
 	get '/' do
-		'<pre>Server is operational.</pre>'
+		erb :index
 	end
 
 	# Create a new user
@@ -54,4 +60,6 @@ class Server < Sinatra::Base
 		content_type :json
 		{ :photo_id => params[:id], :heart_status => status }.to_json
 	end
+
+	set :allow_origin, :any
 end

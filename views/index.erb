@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+</head>
+<body>
+<form id="form" method="POST">
+	<input type="file" id="file" />
+	<button type="submit">Upload</button>
+</form>
+<script>
+	var form = document.getElementById('form');
+	form.onsubmit = function(event) {
+		event.preventDefault();
+		var file = document.getElementById('file').files;
+		var form_data = new FormData();
+		form_data.append('photo', file[0], file[0].name);
+		var xhr = new XMLHttpRequest();
+		xhr.open('POST', 'http://104.236.41.161/api/photos', true);
+		xhr.onload = function(e) {
+			console.log(e);
+		}
+		xhr.send(form_data);
+	}
+</script>
+</body>
+</html>
