@@ -43,12 +43,11 @@ class Server < Sinatra::Base
 		radius = params[:radius] ? params[:radius].to_f * 0.015 : 5 * 0.015 # in miles
 		latitude = params[:latitude] ? params[:latitude].to_f : 0
 		longitude = params[:longitude] ? params[:longitude].to_f : 0
-		photos = Photo.where(:latitude => { :$gte => latitude - radius, :$lte => latitude + radius },
-			:longitude => { :$gte => longitude - radius, :$lte => longitude + radius }).limit(10)
+		photos = nil
 		if params[:sort] == "hearts"
-			photos.sort(:hearts.desc)
+			photos = Photo.where(:latitude => { :$gte => latitude - radius, :$lte => latitude + radius }, :longitude => { :$gte => longitude - radius, :$lte => longitude + radius }).sort(:hearts_count.desc).limit(10)
 		else
-			photos.sort(:created_at.desc)
+			photos = Photo.where(:latitude => { :$gte => latitude - radius, :$lte => latitude + radius }, :longitude => { :$gte => longitude - radius, :$lte => longitude + radius }).sort(:created_at.desc).limit(10)
 		end
 		photos.to_json
 	end
