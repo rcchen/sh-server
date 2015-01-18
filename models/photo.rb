@@ -10,6 +10,7 @@ class Photo
 
 	# Photos have hearts
 	key :hearts, Array
+	key :hearts_count, Integer
 
 	# All photos belong to users
 	belongs_to :user

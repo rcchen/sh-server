@@ -45,6 +45,11 @@ class Server < Sinatra::Base
 		longitude = params[:longitude] ? params[:longitude].to_f : 0
 		photos = Photo.where(:latitude => { :$gte => latitude - radius, :$lte => latitude + radius },
 			:longitude => { :$gte => longitude - radius, :$lte => longitude + radius }).limit(10)
+		if params[:sort] == "hearts"
+			photos.sort(:hearts.desc)
+		else
+			photos.sort(:created_at.desc)
+		end
 		photos.to_json
 	end
 
@@ -56,7 +61,7 @@ class Server < Sinatra::Base
 		end
 		latitude = params[:latitude] ? params[:latitude].to_f : nil
 		longitude = params[:longitude] ? params[:longitude].to_f : nil
-		photo = Photo.create({ :url => filename, :latitude => params[:latitude], :longitude => params[:longitude] })
+		photo = Photo.create({ :url => filename, :latitude => params[:latitude], :longitude => params[:longitude], :hearts_count => 0 })
 		user = User.first( :token => params[:token] )
 		user.photos << photo
 		photo.to_json
@@ -76,13 +81,15 @@ class Server < Sinatra::Base
 		status = true
 		if photo[:hearts].include? user[:_id]
 			photo[:hearts].delete(user[:_id])
+			photo[:hearts_count] -= 1
 			status = false
 		else
 			photo[:hearts] << user[:_id]
+			photo[:hearts_count] += 1
 		end
 		photo.save!
 		content_type :json
-		{ :photo_id => params[:id], :heart_status => status }.to_json
+		{ :photo_id => params[:id], :heart_status => status, :heart_count => photo[:hearts_count] }.to_json
 	end
 
 	set :allow_origin, :any
