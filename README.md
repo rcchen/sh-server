@@ -6,7 +6,14 @@
 	"email": "sprite@pepsi.com"
 }
 ```
-* `GET /api/photos/` - retrieves all photos. Returns an Array of all Photo objects retrieved.
+* `GET /api/photos/` - retrieves all photos. Takes parameters of `radius`, `latitude`, and `longitude`. Returns an Array of all Photo objects retrieved.
+```
+{
+	"radius": "100",
+	"latitude": "40.000",
+	"longitude": "75.000"
+}
+```
 * `POST /api/photos` - upload a photo to the system. Photo is uploaded as the `photo` parameter. Requires the user token with `token` and `latitude` and `longitude` parameters as well. Returns the created Photo object.
 ```
 {
