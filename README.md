@@ -1,12 +1,12 @@
 #### Endpoints
 
-* `POST /api/users/` - create a new user. Requires an `email` parameter. Returns the created User object.
+* `POST /api/users` - create a new user. Requires an `email` parameter. Returns the created User object.
 ```
 {
 	"email": "sprite@pepsi.com"
 }
 ```
-* `GET /api/photos/` - retrieves all photos. Takes parameters of `radius`, `latitude`, and `longitude`. Returns an Array of all Photo objects retrieved.
+* `GET /api/photos` - retrieves all photos. Takes parameters of `radius`, `latitude`, and `longitude`. Returns an Array of all Photo objects retrieved.
 ```
 {
 	"radius": "100",
