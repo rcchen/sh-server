@@ -5,8 +5,8 @@ class Photo
 	key :url, String
 
 	# Every photo stores a location
-	key :latitude, String
-	key :longitude, String
+	key :latitude, Double
+	key :longitude, Double
 
 	# Photos have hearts
 	key :hearts, Array
