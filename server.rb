@@ -17,20 +17,35 @@ class Server < Sinatra::Base
 		erb :index
 	end
 
-	# Create a new user
-	post '/api/users' do
+	# Get a user by email
+	get '/api/users' do
 		content_type :json
-		user = User.create({
-			:email => params[:email],
-			:token => SecureRandom.urlsafe_base64(16)
-		})
+		user = User.first( :email => params[:email] )
 		user.to_json
 	end
 
-	# Show photos
+	# Create a new user
+	post '/api/users' do
+		content_type :json
+		user = User.first( :email => params[:email] )
+		if user != nil
+			user = User.create({
+				:email => params[:email],
+				:token => SecureRandom.urlsafe_base64(16)
+			})
+		end
+		user.to_json
+	end
+
+	# Show photos. Will eventually be location-replaced
 	get '/api/photos' do
 		content_type :json
-		Photo.all.to_json
+		radius = params[:radius] ? params[:radius].to_f * 0.015 : 5 * 0.015 # in miles
+		latitude = params[:latitude] ? params[:latitude].to_f : 0
+		longitude = params[:longitude] ? params[:longitude].to_f : 0
+		photos = Photo.where(:latitude => { :$gte => latitude - radius, :$lte => latitude + radius },
+			:longitude => { :$gte => longitude - radius, :$lte => longitude + radius }).limit(10)
+		photos.to_json
 	end
 
 	# Add photo
@@ -39,9 +54,18 @@ class Server < Sinatra::Base
 		File.open("public/#{filename}", "w") do |f|
 			f.write(params[:photo][:tempfile].read)
 		end
+		latitude = params[:latitude] ? params[:latitude].to_f : nil
+		longitude = params[:longitude] ? params[:longitude].to_f : nil
 		photo = Photo.create({ :url => filename, :latitude => params[:latitude], :longitude => params[:longitude] })
 		user = User.first( :token => params[:token] )
 		user.photos << photo
+		photo.to_json
+	end
+
+	# Retrieve data for a specific photo
+	get '/api/photos/:id' do
+		content_type :json
+		photo = Photo.first(:id => params[:id])
 		photo.to_json
 	end
 
